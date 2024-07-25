@@ -265,6 +265,7 @@ namespace OnekoSharp
         }
         private void ToggleBox()
         {
+            BringToFront();
             if (_inabox)
             {
                 _inabox = false;
