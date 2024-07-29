@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
@@ -77,10 +74,10 @@ namespace OnekoSharp
             };
             onekoSize.Value = Config.Instance.OnekoSize / 32;
             onekoSpeed.Value = _speedSettings.FindLastIndex(x=>x<=Config.Instance.OnekoSpeed);
-            skAlt.Checked = Config.Instance.ToggleBoxShortkeyModifier.HasFlag(OnekoSharp.ModifierKeys.Alt);
-            skCtrl.Checked = Config.Instance.ToggleBoxShortkeyModifier.HasFlag(OnekoSharp.ModifierKeys.Control);
-            skShift.Checked = Config.Instance.ToggleBoxShortkeyModifier.HasFlag(OnekoSharp.ModifierKeys.Shift);
-            skWin.Checked = Config.Instance.ToggleBoxShortkeyModifier.HasFlag(OnekoSharp.ModifierKeys.Win);
+            skAlt.Checked = Utils.HasFlag(Config.Instance.ToggleBoxShortkeyModifier,OnekoSharp.ModifierKeys.Alt);
+            skCtrl.Checked = Utils.HasFlag(Config.Instance.ToggleBoxShortkeyModifier, OnekoSharp.ModifierKeys.Control);
+            skShift.Checked = Utils.HasFlag(Config.Instance.ToggleBoxShortkeyModifier, OnekoSharp.ModifierKeys.Shift);
+            skWin.Checked = Utils.HasFlag(Config.Instance.ToggleBoxShortkeyModifier, OnekoSharp.ModifierKeys.Win);
             skKey.SelectedItem = Config.Instance.ToggleBoxShortkeyKey;
             Controls.Add(onekoGroup);
             Button apply = new Button() { Text = "Apply", Size = new Size(64,24), Location = new Point(256-16 - 4-64, 256 - 31 - 12 - 24) };

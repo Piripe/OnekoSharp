@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -82,7 +81,7 @@ namespace OnekoSharp
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             if (!_inabox) g.Clear(Color.Fuchsia);
-            g.DrawOneko(_currentSprite, new Point(_onekoOffset.X,_onekoOffset.Y), OnekoSize);
+            Utils.DrawOneko(g,_currentSprite, new Point(_onekoOffset.X,_onekoOffset.Y), OnekoSize);
         }
 
         protected override CreateParams CreateParams
@@ -107,7 +106,7 @@ namespace OnekoSharp
 
             Point target = new Point(MousePosition.X - _paintLocation.X, MousePosition.Y - _paintLocation.Y);
 
-            int distance = onekoCenter.DistanceBetween(target);
+            int distance = Utils.DistanceBetween(onekoCenter,target);
 
             if (distance > OnekoSpeed * 3)
             {
@@ -224,10 +223,10 @@ namespace OnekoSharp
         private OnekoSprite Walk(AnchorStyles dir)
         {
             Point oldLoc = OnekoLocation;
-            if (dir.HasFlag(AnchorStyles.Top)) MoveOneko(y:-OnekoSpeed);
-            else if (dir.HasFlag(AnchorStyles.Bottom)) MoveOneko(y:OnekoSpeed);
-            if (dir.HasFlag(AnchorStyles.Right)) MoveOneko(OnekoSpeed);
-            else if (dir.HasFlag(AnchorStyles.Left)) MoveOneko(-OnekoSpeed);
+            if (Utils.HasFlag(dir,AnchorStyles.Top)) MoveOneko(y:-OnekoSpeed);
+            else if (Utils.HasFlag(dir, AnchorStyles.Bottom)) MoveOneko(y:OnekoSpeed);
+            if (Utils.HasFlag(dir, AnchorStyles.Right)) MoveOneko(OnekoSpeed);
+            else if (Utils.HasFlag(dir, AnchorStyles.Left)) MoveOneko(-OnekoSpeed);
             Point newLoc = OnekoLocation;
             _stateFrame++;
 
@@ -256,10 +255,10 @@ namespace OnekoSharp
                 case AnchorStyles.Top | AnchorStyles.Left:
                     return OnekoSprite.WalkUL1+ _stateFrame % 2;
                 default:
-                    if (dir.HasFlag(AnchorStyles.Right)) return OnekoSprite.ScratchR1 + (_stateFrame/2)%2;
-                    else if (dir.HasFlag(AnchorStyles.Left)) return OnekoSprite.ScratchL1 + (_stateFrame / 2)%2;
-                    else if (dir.HasFlag(AnchorStyles.Top)) return OnekoSprite.ScratchU1 + (_stateFrame / 2) % 2;
-                    else if (dir.HasFlag(AnchorStyles.Bottom)) return OnekoSprite.ScratchD1 + (_stateFrame / 2) % 2;
+                    if (Utils.HasFlag(dir, AnchorStyles.Right)) return OnekoSprite.ScratchR1 + (_stateFrame/2)%2;
+                    else if (Utils.HasFlag(dir, AnchorStyles.Left)) return OnekoSprite.ScratchL1 + (_stateFrame / 2)%2;
+                    else if (Utils.HasFlag(dir, AnchorStyles.Top)) return OnekoSprite.ScratchU1 + (_stateFrame / 2) % 2;
+                    else if (Utils.HasFlag(dir, AnchorStyles.Bottom)) return OnekoSprite.ScratchD1 + (_stateFrame / 2) % 2;
                     return OnekoSprite.Idle;
             }
         }
