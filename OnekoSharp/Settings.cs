@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
+using OnekoSharp.Properties;
 
 namespace OnekoSharp
 {
@@ -10,9 +11,10 @@ namespace OnekoSharp
     {
         readonly private static List<int> _speedSettings = new List<int>() { 4, 8, 12, 16, 24, 32, 48, 64, 72, 96, 128, 192 };
         private bool _settingsUpdated = false;
-        public Settings(Oneko oneko) {
+        public Settings(Oneko oneko)
+        {
             Text = "Oneko Settings";
-            Icon = Properties.Resources.onekoIcon;
+            Icon = oneko.Icon;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = false;
@@ -84,8 +86,8 @@ namespace OnekoSharp
             apply.Click += (s, e) => {
                 oneko.OnekoSize = Config.Instance.OnekoSize;
                 oneko.OnekoSpeed = Config.Instance.OnekoSpeed;
-                oneko.hook.UnregisterLastHotKey();
-                oneko.hook.RegisterHotKey(Config.Instance.ToggleBoxShortkeyModifier, Config.Instance.ToggleBoxShortkeyKey);
+                //oneko.hook.UnregisterLastHotKey();
+                //oneko.hook.RegisterHotKey(Config.Instance.ToggleBoxShortkeyModifier, Config.Instance.ToggleBoxShortkeyKey);
             };
             Controls.Add(apply);
             FormClosing += (s, e) => {

@@ -5,12 +5,12 @@ namespace OnekoSharp
 {
     internal static class Utils
     {
-        public static void DrawOneko(Graphics g, OnekoSprite sprite, Point pos, int size)
+        public static void DrawOneko(Graphics g, Bitmap sprites, int sprite, Point pos, int size)
         {
-            int spriteX = ((int)sprite % 8) * 32;
-            int spriteY = (int)((int)sprite / 8d) * 32;
+            int spriteX = (sprite % 8) * 32;
+            int spriteY = (int)(sprite / 8d) * 32;
             g.DrawImage(
-                Properties.Resources.oneko, 
+                sprites, 
                 new Rectangle(pos,new Size(size,size)),
                 new Rectangle(spriteX,spriteY,32,32),
             GraphicsUnit.Pixel);

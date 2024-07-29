@@ -28,27 +28,32 @@ namespace OnekoSharp
         private NotifyIcon _trayIcon;
         private MenuItem _putInABox;
         private Settings _settings;
+        private Bitmap _onekoSprites;
         public Oneko()
         {
-            _settings = new Settings(this);
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(Properties.Resources));
+            SuspendLayout();
+
             Text = "Oneko";
-            Icon = Properties.Resources.onekoIcon;
+            Icon = (Icon)resources.GetObject("onekoIcon");
+            _onekoSprites = (Bitmap)resources.GetObject("oneko");
             MaximizeBox = false;
             MinimumSize = new Size(32, 32);
-            TransparencyKey = Color.Fuchsia;
-            DoubleBuffered = true;
+            TransparencyKey = Color.FromArgb(16711935);
             SetWindowStyle(false);
             StartPosition = FormStartPosition.CenterScreen;
             hook.KeyPressed += (s,e)=>ToggleBox();
             hook.RegisterHotKey(Config.Instance.ToggleBoxShortkeyModifier, Config.Instance.ToggleBoxShortkeyKey);
+            _settings = new Settings(this);
             var contextMenu = new ContextMenu();
             _putInABox = new MenuItem("Put Oneko in a box", (_, e) => ToggleBox());
             contextMenu.MenuItems.Add(_putInABox);
             contextMenu.MenuItems.Add(new MenuItem("Settings", (_, e) => _settings.Show()));
             contextMenu.MenuItems.Add(new MenuItem("-"));
             contextMenu.MenuItems.Add(new MenuItem("Kill Oneko", (_, e) => Application.ExitThread()));
-            _trayIcon = new NotifyIcon() { Text="Oneko",Icon=Properties.Resources.onekoIcon,Visible=true, ContextMenu=contextMenu};
+            _trayIcon = new NotifyIcon() { Text = "Oneko", Icon = Icon, Visible = true, ContextMenu=contextMenu};
             _refreshTimer = new System.Threading.Timer(OnRefresh, null, 150, 150);
+            ResumeLayout(true);
         }
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -81,7 +86,7 @@ namespace OnekoSharp
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             if (!_inabox) g.Clear(Color.Fuchsia);
-            Utils.DrawOneko(g,_currentSprite, new Point(_onekoOffset.X,_onekoOffset.Y), OnekoSize);
+            Utils.DrawOneko(g, _onekoSprites, (int)_currentSprite, new Point(_onekoOffset.X,_onekoOffset.Y), OnekoSize);
         }
 
         protected override CreateParams CreateParams
@@ -183,7 +188,7 @@ namespace OnekoSharp
                     return Scratch(OnekoState.Sleep);
                 case OnekoState.Sleep:
                     _stateFrame++;
-                    return OnekoSprite.Sleep1 + ((_stateFrame/6) % 2);
+                    return OnekoSprite.Sl + ((_stateFrame/6) % 2);
                 default:
                     _stateFrame = _rand.Next(16);
                     _state = OnekoState.Idle;
@@ -207,7 +212,7 @@ namespace OnekoSharp
                     _state = OnekoState.Idle;
                 }
             }
-            return OnekoSprite.Scratch1 + (_stateFrame / 2 % 2);
+            return OnekoSprite.S + (_stateFrame / 2 % 2);
         }
         private void MoveOneko(int x=0, int y=0)
         {
@@ -239,26 +244,26 @@ namespace OnekoSharp
             switch (moveDir)
             {
                 case AnchorStyles.Top:
-                    return OnekoSprite.WalkU1+ _stateFrame%2;
+                    return OnekoSprite.WU+ _stateFrame%2;
                 case AnchorStyles.Top|AnchorStyles.Right:
-                    return OnekoSprite.WalkUR1+ _stateFrame%2;
+                    return OnekoSprite.WUR+ _stateFrame%2;
                 case AnchorStyles.Right:
-                    return OnekoSprite.WalkR1+ _stateFrame % 2;
+                    return OnekoSprite.WR+ _stateFrame % 2;
                 case AnchorStyles.Bottom|AnchorStyles.Right:
-                    return OnekoSprite.WalkDR1+ _stateFrame % 2;
+                    return OnekoSprite.WDR+ _stateFrame % 2;
                 case AnchorStyles.Bottom:
-                    return OnekoSprite.WalkD1+ _stateFrame % 2;
+                    return OnekoSprite.WD+ _stateFrame % 2;
                 case AnchorStyles.Bottom | AnchorStyles.Left:
-                    return OnekoSprite.WalkDL1+ _stateFrame % 2;
+                    return OnekoSprite.WDL+ _stateFrame % 2;
                 case AnchorStyles.Left:
-                    return OnekoSprite.WalkL1+ _stateFrame % 2;
+                    return OnekoSprite.WL+ _stateFrame % 2;
                 case AnchorStyles.Top | AnchorStyles.Left:
-                    return OnekoSprite.WalkUL1+ _stateFrame % 2;
+                    return OnekoSprite.WUL+ _stateFrame % 2;
                 default:
-                    if (Utils.HasFlag(dir, AnchorStyles.Right)) return OnekoSprite.ScratchR1 + (_stateFrame/2)%2;
-                    else if (Utils.HasFlag(dir, AnchorStyles.Left)) return OnekoSprite.ScratchL1 + (_stateFrame / 2)%2;
-                    else if (Utils.HasFlag(dir, AnchorStyles.Top)) return OnekoSprite.ScratchU1 + (_stateFrame / 2) % 2;
-                    else if (Utils.HasFlag(dir, AnchorStyles.Bottom)) return OnekoSprite.ScratchD1 + (_stateFrame / 2) % 2;
+                    if (Utils.HasFlag(dir, AnchorStyles.Right)) return OnekoSprite.SR + (_stateFrame/2)%2;
+                    else if (Utils.HasFlag(dir, AnchorStyles.Left)) return OnekoSprite.SL + (_stateFrame / 2)%2;
+                    else if (Utils.HasFlag(dir, AnchorStyles.Top)) return OnekoSprite.SU + (_stateFrame / 2) % 2;
+                    else if (Utils.HasFlag(dir, AnchorStyles.Bottom)) return OnekoSprite.SD + (_stateFrame / 2) % 2;
                     return OnekoSprite.Idle;
             }
         }

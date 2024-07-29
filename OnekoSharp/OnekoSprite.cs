@@ -2,23 +2,23 @@
 {
     internal enum OnekoSprite
     {
-        WalkU1, WalkU2,
-        WalkUR1, WalkUR2,
-        WalkR1, WalkR2,
-        WalkDR1, WalkDR2,
-        WalkD1, WalkD2,
-        WalkDL1, WalkDL2,
-        WalkL1, WalkL2,
-        WalkUL1, WalkUL2,
-        ScratchU1, ScratchU2,
-        ScratchR1, ScratchR2,
-        ScratchD1, ScratchD2,
-        ScratchL1, ScratchL2,
-        Idle,
-        Yawn,
-        Scratch1, Scratch2,
-        Sleep1, Sleep2,
-        Wakeup,
-        Surprised,
+        WU = 0, // Walk
+        WUR = 2,
+        WR = 4,
+        WDR = 6,
+        WD = 8,
+        WDL = 10,
+        WL = 12,
+        WUL = 14,
+        SU = 16, // Scratch
+        SR = 18,
+        SD = 20,
+        SL = 22,
+        Idle = 24,
+        Yawn = 25,
+        S = 26, // Scratch
+        Sl = 28, // Sleep
+        Wakeup = 30,
+        Surprised = 31,
     }
 }
