@@ -33,7 +33,6 @@ namespace OnekoSharp
         {
             ComponentResourceManager resources = new ComponentResourceManager(typeof(Properties.Resources));
             SuspendLayout();
-
             Text = "Oneko";
             Icon = (Icon)resources.GetObject("onekoIcon");
             _onekoSprites = (Bitmap)resources.GetObject("oneko");
@@ -93,17 +92,20 @@ namespace OnekoSharp
         {
             get
             {
-                if (_inabox) return base.CreateParams;
                 const int WS_EX_LAYERED = 0x80000;
                 const int WS_EX_TRANSPARENT = 0x20;
                 const int WS_EX_TOOLWINDOW = 0x00000080;
+                const int WS_EX_NOACTIVATE = 0x8000000;
+                if (_inabox) return base.CreateParams;
                 CreateParams cp = base.CreateParams;
                 cp.ExStyle |= WS_EX_LAYERED;
                 cp.ExStyle |= WS_EX_TRANSPARENT;
                 cp.ExStyle |= WS_EX_TOOLWINDOW;
+                cp.ExStyle |= WS_EX_NOACTIVATE;
                 return cp;
             }
         }
+        protected override bool ShowWithoutActivation => true;
         private OnekoSprite Animate()
         {
             Point onekoCenter = OnekoLocation;
@@ -269,10 +271,10 @@ namespace OnekoSharp
         }
         private void ToggleBox()
         {
-            BringToFront();
             if (_inabox)
             {
                 _inabox = false;
+                Activate();
                 SetWindowStyle(false);
                 Location = new Point(Location.X + _onekoOffset.X + _paintLocation.X, Location.Y + _onekoOffset.Y + _paintLocation.Y);
                 _onekoOffset = new Point(0, 0);
