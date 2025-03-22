@@ -1,7 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace OnekoSharp
 {
@@ -22,27 +26,25 @@ namespace OnekoSharp
         private OnekoState _state = OnekoState.Idle;
         private int _stateFrame = 1;
         private OnekoSprite _currentSprite = OnekoSprite.Idle;
-        public KeyboardHook hook = new KeyboardHook();
         private bool _inabox = false;
         private Point _paintLocation = new Point(0,0);
         private NotifyIcon _trayIcon;
         private MenuItem _putInABox;
         private Settings _settings;
-        private Bitmap _onekoSprites;
+        private Image _onekoSprites;
         public Oneko()
         {
-            ComponentResourceManager resources = new ComponentResourceManager(typeof(Properties.Resources));
             SuspendLayout();
             Text = "Oneko";
-            Icon = (Icon)resources.GetObject("onekoIcon");
-            _onekoSprites = (Bitmap)resources.GetObject("oneko");
+            var assembly = Assembly.GetExecutingAssembly();
+            Icon = Icon.ExtractAssociatedIcon(assembly.Location);
+            _onekoSprites = Image.FromStream(assembly.GetManifestResourceStream("OnekoSharp.oneko.png"));
             MaximizeBox = false;
             MinimumSize = new Size(32, 32);
             TransparencyKey = Color.FromArgb(16711935);
             SetWindowStyle(false);
             StartPosition = FormStartPosition.CenterScreen;
-            hook.KeyPressed += (s,e)=>ToggleBox();
-            hook.RegisterHotKey(Config.Instance.ToggleBoxShortkeyModifier, Config.Instance.ToggleBoxShortkeyKey);
+            DoubleBuffered = true;
             _settings = new Settings(this);
             var contextMenu = new ContextMenu();
             _putInABox = new MenuItem("Put Oneko in a box", (_, e) => ToggleBox());
@@ -63,8 +65,7 @@ namespace OnekoSharp
             }
             base.OnClosing(e);
         }
-
-        private void OnRefresh(object stateInfo)
+        private unsafe void OnRefresh(object stateInfo)
         {
             Invoke((MethodInvoker)(() =>
             {
@@ -104,6 +105,25 @@ namespace OnekoSharp
                 cp.ExStyle |= WS_EX_NOACTIVATE;
                 return cp;
             }
+        }
+        private static int WM_HOTKEY = 0x0312;
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            if (m.Msg == WM_HOTKEY)
+            {
+                ToggleBox();
+            }
+        }
+        public void RegisterHotKey(ModifierKeys modifier, Keys key)
+        {
+            Win32.RegisterHotKey(Handle, 0, modifier, (uint)key);
+        }
+
+        public void UnregisterLastHotKey()
+        {
+            Win32.UnregisterHotKey(Handle, 0);
         }
         protected override bool ShowWithoutActivation => true;
         private OnekoSprite Animate()
@@ -299,6 +319,7 @@ namespace OnekoSharp
             ShowInTaskbar = box;
             Size = box ? new Size(OnekoSize * 8, OnekoSize * 6) : new Size(OnekoSize, OnekoSize);
             TopMost = !box;
+            RegisterHotKey(Config.Instance.ToggleBoxShortkeyModifier, Config.Instance.ToggleBoxShortkeyKey);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace OnekoSharp
 {
     public class Config
     {
-        private static XmlSerializer serializer = new XmlSerializer(typeof(Config));
+        private static readonly XmlSerializer serializer = new XmlSerializer(typeof(Config));
         public static Config Instance { get; set; } = LoadConfig();
 
 

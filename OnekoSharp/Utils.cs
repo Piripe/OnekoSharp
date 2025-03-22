@@ -5,9 +5,9 @@ namespace OnekoSharp
 {
     internal static class Utils
     {
-        public static void DrawOneko(Graphics g, Bitmap sprites, int sprite, Point pos, int size)
+        public static void DrawOneko(Graphics g, Image sprites, int sprite, Point pos, int size)
         {
-            int spriteX = (sprite % 8) * 32;
+            int spriteX = sprite % 8 * 32;
             int spriteY = (int)(sprite / 8d) * 32;
             g.DrawImage(
                 sprites, 

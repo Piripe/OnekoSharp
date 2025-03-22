@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
-using OnekoSharp.Properties;
 
 namespace OnekoSharp
 {
@@ -11,6 +10,7 @@ namespace OnekoSharp
     {
         readonly private static List<int> _speedSettings = new List<int>() { 4, 8, 12, 16, 24, 32, 48, 64, 72, 96, 128, 192 };
         private bool _settingsUpdated = false;
+
         public Settings(Oneko oneko)
         {
             Text = "Oneko Settings";
@@ -28,6 +28,7 @@ namespace OnekoSharp
 
             TrackBar onekoSize = new TrackBar() { Width = 128, LargeChange = 1, Minimum = 1, Maximum = 8 };
             TrackBar onekoSpeed = new TrackBar() { Width = 128, LargeChange = 1, Maximum = 11 };
+            //CheckBox onekoAutoHide = new CheckBox() { Text = "Automatically hide oneko when the mouse is not visible", Width=256-32, Height=32 };
             CheckBox skAlt = new CheckBox() { Text = "Alt", Tag = OnekoSharp.ModifierKeys.Alt, AutoSize = true, };
             CheckBox skCtrl = new CheckBox() { Text = "Ctrl", Tag = OnekoSharp.ModifierKeys.Control, AutoSize = true, };
             CheckBox skShift = new CheckBox() { Text = "Shift", Tag = OnekoSharp.ModifierKeys.Shift, AutoSize = true, };
@@ -42,6 +43,7 @@ namespace OnekoSharp
                 onekoSize,
                 new Label() { Text = "Oneko Speed" },
                 onekoSpeed,
+                //onekoAutoHide,
                 new Label() { Text = "Keyboard shortcut to put Oneko in a box", AutoSize=true },
                 skAlt,
                 skCtrl,
@@ -86,8 +88,7 @@ namespace OnekoSharp
             apply.Click += (s, e) => {
                 oneko.OnekoSize = Config.Instance.OnekoSize;
                 oneko.OnekoSpeed = Config.Instance.OnekoSpeed;
-                //oneko.hook.UnregisterLastHotKey();
-                //oneko.hook.RegisterHotKey(Config.Instance.ToggleBoxShortkeyModifier, Config.Instance.ToggleBoxShortkeyKey);
+                oneko.RegisterHotKey(Config.Instance.ToggleBoxShortkeyModifier, Config.Instance.ToggleBoxShortkeyKey);
             };
             Controls.Add(apply);
             FormClosing += (s, e) => {
